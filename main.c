@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "lists.h"
+#include "list_intf.h"
 
 // custom data structure to be used as node data
 typedef struct myds_t
@@ -16,329 +16,97 @@ typedef struct myds_t
     uint32_t field4;
 }myds_t;
 
+static myds_t dataHead, data1, data2, data3, data4, data5, data6;
+
+
+static void create_list(list_type_t *pList)
+{
+    // clear data
+    memset(pList, 0, sizeof(*pList));
+
+    // initialize list
+    lt_error_code_t status = lt_initialize(pList, sizeof(myds_t));
+    assert(status == List_Ok);
+}
+
+static void add_nodes(list_type_t *pList)
+{
+    // create the list head
+    lt_error_code_t status = lt_add(pList, &dataHead);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data1);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data2);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data3);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data4);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data5);
+    assert(status == List_Ok);
+
+    status = lt_add(pList, &data6);
+    assert(status == List_Ok);
+}
+
+static void remove_nodes(list_type_t *pList)
+{
+    // remove node operations
+    myds_t ds1, ds2, ds3, ds4, ds5, ds6;
+    lt_error_code_t status = lt_remove(pList, &ds1);
+    assert(status == List_Ok);
+
+    status = lt_remove(pList, &ds2);
+    assert(status == List_Ok);
+
+    status = lt_remove(pList, &ds3);
+    assert(status == List_Ok);
+
+    status = lt_remove(pList, &ds4);
+    assert(status == List_Ok);
+
+    status = lt_remove(pList, &ds5);
+    assert(status == List_Ok);
+
+    status = lt_remove(pList, &ds6);
+    assert(status == List_Ok);
+}
+
 int main()
 {
-    myds_t dataHead, data1, data2, data3, data4, data5, data6;
-    generic_list_t *pListHead = NULL;
+    list_type_t myList;
 
-    // create the list head
-    gl_error_t status = gl_get_new_node(&pListHead);
-    assert(status == List_Ok);
-    pListHead->pData = &dataHead;
+    dataHead.field1 = 0;
+    data1.field1 = 1;
+    data2.field1 = 2;
+    data3.field1 = 3;
+    data4.field1 = 4;
+    data5.field1 = 5;
+    data6.field1 = 6;
 
-    generic_list_t *pNode1 = NULL;
-    status = gl_get_new_node(&pNode1);
-    assert(status == List_Ok);
-    pNode1->pData = &data1;
+    create_list(&myList);
 
-    generic_list_t *pNode2 = NULL;
-    status = gl_get_new_node(&pNode2);
-    assert(status == List_Ok);
-    pNode2->pData = &data2;
+    add_nodes(&myList);
 
-    generic_list_t *pNode3 = NULL;
-    status = gl_get_new_node(&pNode3);
-    assert(status == List_Ok);
-    pNode3->pData = &data3;
+    remove_nodes(&myList);
 
-    generic_list_t *pNode4 = NULL;
-    status = gl_get_new_node(&pNode4);
-    assert(status == List_Ok);
-    pNode4->pData = &data4;
+    add_nodes(&myList);
 
-    generic_list_t *pNode5 = NULL;
-    status = gl_get_new_node(&pNode5);
-    assert(status == List_Ok);
-    pNode5->pData = &data5;
+    lt_error_code_t status = List_Ok;
 
-    generic_list_t *pNode6 = NULL;
-    status = gl_get_new_node(&pNode6);
-    assert(status == List_Ok);
-    pNode6->pData = &data6;
+    int i = 0;
+    do
+    {
+        printf("node %d: value %u\n", i++, ((myds_t *)(myList.pCur->pData))->field1 );
+        status = lt_navigate_next(&myList);
+    } while (List_Ok == status);
 
-
-
-    // add node operations
-    status = gl_add_to_front(&pListHead, pNode1);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode2);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode3);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode4);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode5);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode6);
-    assert(status == List_Ok);
-
-
-
-    // remove node operations
-    generic_list_t *pRN1 = NULL, *pRN2 = NULL, *pRN3 = NULL, *pRN4 = NULL, *pRN5 = NULL, *pRN6 = NULL;
-    status = gl_remove_from_front(&pListHead, &pRN1);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN2);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN3);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN4);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN5);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN6);
-    assert(status == List_Ok);
-
-    // free nodes
-    status = gl_free_node(&pRN1);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN2);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN3);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN4);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN5);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN6);
-    assert(status == List_Ok);
-
-    // allocate new nodes
-    pNode1 = NULL;
-    status = gl_get_new_node(&pNode1);
-    assert(status == List_Ok);
-    pNode1->pData = &data1;
-
-    pNode2 = NULL;
-    status = gl_get_new_node(&pNode2);
-    assert(status == List_Ok);
-    pNode2->pData = &data2;
-
-    pNode3 = NULL;
-    status = gl_get_new_node(&pNode3);
-    assert(status == List_Ok);
-    pNode3->pData = &data3;
-
-    pNode4 = NULL;
-    status = gl_get_new_node(&pNode4);
-    assert(status == List_Ok);
-    pNode4->pData = &data4;
-
-    pNode5 = NULL;
-    status = gl_get_new_node(&pNode5);
-    assert(status == List_Ok);
-    pNode5->pData = &data5;
-
-    pNode6 = NULL;
-    status = gl_get_new_node(&pNode6);
-    assert(status == List_Ok);
-    pNode6->pData = &data6;
-
-
-
-    // add node operations
-    status = gl_add_to_front(&pListHead, pNode1);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode2);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode3);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode4);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode5);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode6);
-    assert(status == List_Ok);
-
-
-
-    // remove node operations
-    status = gl_remove_from_rear(&pListHead, &pRN1);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN2);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN3);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN4);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN5);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN6);
-    assert(status == List_Ok);
-
-
-    // free nodes
-    status = gl_free_node(&pRN1);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN2);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN3);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN4);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN5);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN6);
-    assert(status == List_Ok);
-
-    // allocate new nodes
-    pNode1 = NULL;
-    status = gl_get_new_node(&pNode1);
-    assert(status == List_Ok);
-    pNode1->pData = &data1;
-
-    pNode2 = NULL;
-    status = gl_get_new_node(&pNode2);
-    assert(status == List_Ok);
-    pNode2->pData = &data2;
-
-    pNode3 = NULL;
-    status = gl_get_new_node(&pNode3);
-    assert(status == List_Ok);
-    pNode3->pData = &data3;
-
-    pNode4 = NULL;
-    status = gl_get_new_node(&pNode4);
-    assert(status == List_Ok);
-    pNode4->pData = &data4;
-
-    pNode5 = NULL;
-    status = gl_get_new_node(&pNode5);
-    assert(status == List_Ok);
-    pNode5->pData = &data5;
-
-    pNode6 = NULL;
-    status = gl_get_new_node(&pNode6);
-    assert(status == List_Ok);
-    pNode6->pData = &data6;
-
-
-    // add node operations
-    status = gl_add_to_front(&pListHead, pNode1);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode2);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode3);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode4);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode5);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode6);
-    assert(status == List_Ok);
-
-
-
-    // remove node operations
-    status = gl_remove_from_front(&pListHead, &pRN1);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN2);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN3);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN4);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_front(&pListHead, &pRN5);
-    assert(status == List_Ok);
-
-    status = gl_remove_from_rear(&pListHead, &pRN6);
-    assert(status == List_Ok);
-
-    // free nodes
-    status = gl_free_node(&pRN1);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN2);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN3);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN4);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN5);
-    assert(status == List_Ok);
-    status = gl_free_node(&pRN6);
-    assert(status == List_Ok);
-
-    // allocate new nodes
-    pNode1 = NULL;
-    status = gl_get_new_node(&pNode1);
-    assert(status == List_Ok);
-    pNode1->pData = &data1;
-
-    pNode2 = NULL;
-    status = gl_get_new_node(&pNode2);
-    assert(status == List_Ok);
-    pNode2->pData = &data2;
-
-    pNode3 = NULL;
-    status = gl_get_new_node(&pNode3);
-    assert(status == List_Ok);
-    pNode3->pData = &data3;
-
-    pNode4 = NULL;
-    status = gl_get_new_node(&pNode4);
-    assert(status == List_Ok);
-    pNode4->pData = &data4;
-
-    pNode5 = NULL;
-    status = gl_get_new_node(&pNode5);
-    assert(status == List_Ok);
-    pNode5->pData = &data5;
-
-    pNode6 = NULL;
-    status = gl_get_new_node(&pNode6);
-    assert(status == List_Ok);
-    pNode6->pData = &data6;
-
-    // add node operations
-    status = gl_add_to_front(&pListHead, pNode1);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode2);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode3);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode4);
-    assert(status == List_Ok);
-
-    status = gl_add_to_rear(&pListHead, pNode5);
-    assert(status == List_Ok);
-
-    status = gl_add_to_front(&pListHead, pNode6);
-    assert(status == List_Ok);
-
-    // free node operations
-    status = gl_clear(&pListHead);
+    status = lt_deinit(&myList);
     assert(status == List_Ok);
 
     return 0;

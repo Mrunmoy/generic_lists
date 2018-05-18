@@ -105,7 +105,9 @@ gl_error_t gl_get_new_node(generic_list_t **ppNode)
 {
     if (!ppNode)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
@@ -114,7 +116,9 @@ gl_error_t gl_get_new_node(generic_list_t **ppNode)
         *ppNode = (generic_list_t *)malloc(sizeof(generic_list_t));
         if (!(*ppNode))
         {
+#ifdef DEBUG_LIST_DRIVER
             printf("%s:%d Err: Failed to allocate memory!\r\n", __FUNCTION__, __LINE__);
+#endif
             return List_MemAllocErr;
         }
         (*ppNode)->pData = NULL;
@@ -122,7 +126,9 @@ gl_error_t gl_get_new_node(generic_list_t **ppNode)
     }
     else
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Pointer is already pointing to some memory!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NotEmptyErr;
     }
     return List_Ok;
@@ -143,7 +149,9 @@ gl_error_t gl_add_to_front(generic_list_t **ppListHead, generic_list_t *pNode)
 {
     if (!pNode || !ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
@@ -173,7 +181,9 @@ gl_error_t gl_add_to_rear(generic_list_t **ppListHead, generic_list_t *pNode)
 {
     if (!pNode || !ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
@@ -210,13 +220,17 @@ gl_error_t gl_remove_from_front(generic_list_t **ppListHead, generic_list_t **pR
 {
     if (!ppListHead || !pRemovedNode)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
     if (!*ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Empty List Head!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_EmptyErr;
     }
 
@@ -241,13 +255,17 @@ gl_error_t gl_remove_from_rear(generic_list_t **ppListHead, generic_list_t **pRe
 {
     if (!ppListHead || !pRemovedNode)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
     if (!*ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Empty List Head!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_EmptyErr;
     }
 
@@ -287,13 +305,17 @@ gl_error_t gl_clear(generic_list_t **ppListHead)
 {
     if (!ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 
     if (!*ppListHead)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Warn: Empty List Head!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_Ok;
     }
 
@@ -322,7 +344,9 @@ gl_error_t gl_free_node(generic_list_t **ppNode)
 {
     if (!ppNode)
     {
+#ifdef DEBUG_LIST_DRIVER
         printf("%s:%d Err: Null Pointer!\r\n", __FUNCTION__, __LINE__);
+#endif
         return List_NullPtrErr;
     }
 

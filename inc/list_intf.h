@@ -1,8 +1,8 @@
-#ifndef LISTTEST_LISTS_H
-#define LISTTEST_LISTS_H
+#ifndef LISTTEST_LIST_INTF_H
+#define LISTTEST_LIST_INTF_H
 
 /**
- * @file lists.h
+ * @file list_intf.h
  * @author championsurfer3044 
  * @date 18  May 2018 
  * @brief 
@@ -22,36 +22,30 @@
 *   Include Files
 *----------------------------------------------------------------------
 */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "lists.h"
 
 /*
 *----------------------------------------------------------------------
 *   Public Data Types
 *----------------------------------------------------------------------
 */
-// #define DEBUG_LIST_DRIVER   1
 
-typedef enum gl_error_t
-{
-    List_UninitErr = 0,
-    List_Ok,
-    List_MemAllocErr,
-    List_NullPtrErr,
-    List_NotEmptyErr,
-    List_EmptyErr,
-    List_FullErr,
-    List_BusyErr,
-    List_EndErr,
-    List_EntryNotFoundErr,
-    List_AddErr,
-    List_RemoveErr,
-    List_MaxErr
-}gl_error_t;
+typedef gl_error_t lt_error_code_t;
 
-typedef struct generic_list_t
+typedef struct list_type_t
 {
-    void                  *pData;
-    struct generic_list_t *pNext;
-}generic_list_t;
+    bool                   isInitialized;
+    bool                   lock;
+    uint16_t               count;
+    uint16_t               dataSize;
+    struct generic_list_t *pCur;
+    struct generic_list_t *pHead;
+}list_type_t;
 
 /*
 *----------------------------------------------------------------------
@@ -71,14 +65,10 @@ typedef struct generic_list_t
 *   Externs
 *----------------------------------------------------------------------
 */
+lt_error_code_t lt_initialize(list_type_t *pListContext, uint16_t dataSize);
+lt_error_code_t lt_add(list_type_t *pListContext, void *pData);
+lt_error_code_t lt_remove(list_type_t *pListContext, void *pData);
+lt_error_code_t lt_navigate_next(list_type_t *pListContext);
+lt_error_code_t lt_deinit(list_type_t *pListContext);
 
-gl_error_t gl_get_new_node(generic_list_t **ppNode);
-gl_error_t gl_add_to_front(generic_list_t **ppListHead, generic_list_t *pNode);
-gl_error_t gl_add_to_rear(generic_list_t **ppListHead, generic_list_t *pNode);
-gl_error_t gl_remove_from_front(generic_list_t **ppListHead, generic_list_t **pRemovedNode);
-gl_error_t gl_remove_from_rear(generic_list_t **ppListHead, generic_list_t **pRemovedNode);
-gl_error_t gl_clear(generic_list_t **ppListHead);
-gl_error_t gl_free_node(generic_list_t **ppNode);
-
-
-#endif //LISTTEST_LISTS_H
+#endif //LISTTEST_LIST_INTF_H
